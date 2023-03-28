@@ -1,3 +1,5 @@
+✨ Update: Our API portal is now live, offering free APIs for various AI solutions, including face recognition, liveness detection, and ID document recognition.
+Make sure to check it out at https://getapi.faceonlive.com and take advantage of our free offerings.
 <h1 align="center">Face Liveness Detection SDK For Linux</h1>
 <p align="center">Fully Offline, On-Premise Face Liveness Detection SDK for Linux</p>
 
