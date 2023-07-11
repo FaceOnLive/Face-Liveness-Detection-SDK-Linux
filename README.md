@@ -56,7 +56,20 @@ https://github.com/FaceOnLive/Face-Liveness-Detection-SDK-Linux/blob/6e702fa01ae
 online init failed: 6
 hwid:  IXwjedMe8M5cZX/GwU3NEOqJRcqLwldq27HSLyFiejbGDB9XVgytA1RgJukV3mWWTNo84NwTMYU=
 ```
-### 4. Test endpoint
+### 4. Using Docker
+- Build the Docker image:
+```
+sudo docker build --pull --rm -f Dockerfile -t faceonlive_v7:latest .
+```
+- Run Docker with online license:
+```
+sudo docker docker run --network host faceonlive_v7
+```
+- Run Docker with offline license:
+```
+sudo docker run -v license.txt:/root/FaceOnLive_v7/license.txt --network host faceonlive_v7
+```
+### 5. Test endpoint
 To test the endpoint, download the Postman Collection from the following link:
 [FaceOnLive.postman_collection.json](https://github.com/FaceOnLive/Face-Liveness-Detection-SDK-Linux/blob/main/FaceOnLive.postman_collection.json)
 
