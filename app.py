@@ -63,7 +63,7 @@ def check_liveness():
       result = "multiple face detected!"
   elif faceRect[0] < 0 or faceRect[1] < 0 or faceRect[2] >= image.shape[1] or faceRect[2] >= image.shape[0]:
       result = "faace is in boundary!"
-  elif livenessScore[0] > 0:
+  elif livenessScore[0] > 0.5:
       result = "genuine"
   else:
       result = "spoof"
@@ -96,7 +96,7 @@ def check_liveness_base64():
       result = "multiple face detected!"
   elif faceRect[0] < 0 or faceRect[1] < 0 or faceRect[2] >= image.shape[1] or faceRect[2] >= image.shape[0]:
       result = "faace is in boundary!"
-  elif livenessScore[0] > 0:
+  elif livenessScore[0] > 0.5:
       result = "genuine"
   else:
       result = "spoof"
