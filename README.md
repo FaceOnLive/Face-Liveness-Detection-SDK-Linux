@@ -38,7 +38,7 @@ To begin, follow these steps to download and install the necessary dependencies:
 git clone https://github.com/FaceOnLive/Face-Liveness-Detection-SDK-Linux
 cd Face-Liveness-Detection-SDK-Linux
 chmod +x ./install_dependency.sh
-./install_dependency.sh
+sudo ./install_dependency.sh
 ```
 ### 2. Execute the Python Flask application
 Next, run the Python Flask application by executing the following command:
