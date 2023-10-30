@@ -1,3 +1,5 @@
-opencv-python
 flask
 flask-cors
+gradio
+opencv-python
+numpy==1.20.3

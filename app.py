@@ -20,7 +20,7 @@ app = Flask(__name__)
 app.config['SITE'] = "http://0.0.0.0:8000/"
 app.config['DEBUG'] = False
 
-licenseKey = "XXXXX-XXXXX-XXXXX-XXXXX"
+licenseKey = os.environ.get("LICENSE_KEY")
 licensePath = "license.txt"
 modelFolder = os.path.abspath(os.path.dirname(__file__)) + '/facewrapper/dict'
 
