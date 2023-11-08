@@ -1,220 +1,113 @@
 import sys
 sys.path.append('.')
 
-from flask import Flask, render_template, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify
 from time import gmtime, strftime
 import os
 import base64
 import json
-import uuid
 import cv2
 import numpy as np
 
-from ocrengine.ocrengine import TTVOcrGetHWID
-from ocrengine.ocrengine import TTVOcrSetActivation
-from ocrengine.ocrengine import TTVOcrInit
-from ocrengine.ocrengine import TTVOcrProcess
-from ocrengine.ocrengine import TTVOcrCreditCard
-from ocrengine.ocrengine import TTVOcrBarCode
-from ocrengine.ocrengine import ttv_if_checker
+from facewrapper.facewrapper import ttv_version
+from facewrapper.facewrapper import ttv_get_hwid
+from facewrapper.facewrapper import ttv_init
+from facewrapper.facewrapper import ttv_init_offline
+from facewrapper.facewrapper import ttv_detect_face
 
-app = Flask(__name__)
+app = Flask(__name__) 
 
-ocrHWID = TTVOcrGetHWID()
+app.config['SITE'] = "http://0.0.0.0:8000/"
+app.config['DEBUG'] = False
+
 licenseKey = os.environ.get("LICENSE_KEY")
-ocrRet = TTVOcrSetActivation(licenseKey.encode('utf-8'))
-print('ocr activation: ', ocrRet.decode('utf-8'))
+licensePath = "license.txt"
+modelFolder = os.path.abspath(os.path.dirname(__file__)) + '/facewrapper/dict'
 
-dictPath = os.path.abspath(os.path.dirname(__file__)) + '/ocrengine/dict'
-ocrRet = TTVOcrInit(dictPath.encode('utf-8'))
-print('ocr engine init: ', ocrRet.decode('utf-8'))
+version = ttv_version()
+print("version: ", version.decode('utf-8'))
 
-@app.route('/ocr/idcard', methods=['POST'])
-def ocr_idcard():
-  file1 = request.files['image1']
+ret = ttv_init(modelFolder.encode('utf-8'), licenseKey.encode('utf-8'))
+if ret != 0:
+    print(f"online init failed: {ret}");
 
-  file_name1 = uuid.uuid4().hex[:6]
-  save_path1 = '/tmp/' + file_name1 + '_' + file1.filename
-  file1.save(save_path1)
+    hwid = ttv_get_hwid()
+    print("hwid: ", hwid.decode('utf-8'))
 
-  file_path1 = os.path.abspath(save_path1)
+    ret = ttv_init_offline(modelFolder.encode('utf-8'), licensePath.encode('utf-8'))
+    if ret != 0:
+        print(f"offline init failed: {ret}")
+        exit(-1)
+    else:
+        print(f"offline init ok")
 
-  if 'image2' not in request.files:
-    file_path2 = ''
-  else:
-    file2 = request.files['image2']
+else:
+    print(f"online init ok")
 
-    file_name2 = uuid.uuid4().hex[:6]
-    save_path2 = '/tmp/' + file_name2 + '_' + file2.filename
-    file2.save(save_path2)
-
-    file_path2 = os.path.abspath(save_path2)
-
-
-  ocrResult = TTVOcrProcess(file_path1.encode('utf-8'), file_path2.encode('utf-8'))
-  status = "ok"
-  if not ocrResult:
-    ocrResDict = {}
-    status = "error"
-  else:
-    ocrResDict = json.loads(ocrResult)  
-
-  if_check = ttv_if_checker(file_path1.encode('utf-8'))
-  response = jsonify({"status": status, "data": ocrResDict, "authenticity": if_check})
-
-  os.remove(file_path1)
-  if 'image2' in request.files:
-    os.remove(file_path2)
-
-  response.status_code = 200
-  response.headers["Content-Type"] = "application/json; charset=utf-8"
-  return response
-
-@app.route('/ocr/idcard_base64', methods=['POST'])
-def ocr_idcard_base64():
-  content = request.get_json()
-  imageBase64 = content['image']
-
-  file_name = uuid.uuid4().hex[:6]
-  save_path = '/tmp/' + file_name
-  with open(save_path, "wb") as fh:
-    fh.write(base64.b64decode(imageBase64))
-
-  file_path = os.path.abspath(save_path)
-
-  ocrResult = TTVOcrProcess(file_path.encode('utf-8'))
-  status = "ok"
-  if not ocrResult:
-    ocrResDict = {}
-    status = "error"
-  else:
-    ocrResDict = json.loads(ocrResult)  
-
-  if_check = ttv_if_checker(file_path.encode('utf-8'))
-  response = jsonify({"status": status, "data": ocrResDict, "authenticity": if_check})
-
-  os.remove(file_path)
-
-  response.status_code = 200
-  response.headers["Content-Type"] = "application/json; charset=utf-8"
-  return response
-
-
-@app.route('/ocr/credit', methods=['POST'])
-def ocr_credit():
+@app.route('/api/liveness', methods=['POST'])
+def check_liveness():
   file = request.files['image']
-  print('ocr_credit ', file)
-
   image = cv2.imdecode(np.fromstring(file.read(), np.uint8), cv2.IMREAD_COLOR)
-  file_name = uuid.uuid4().hex[:6]
-  save_path = '/tmp/' + file_name + '.png'
-  cv2.imwrite(save_path, image)
-
-  file_path = os.path.abspath(save_path)
-
-  ocrResult = TTVOcrCreditCard(file_path.encode('utf-8'))
-  status = "ok"
-  if not ocrResult:
-    ocrResDict = {}
-    status = "error"
+  
+  faceRect = np.zeros([4], dtype=np.int32)
+  livenessScore = np.zeros([1], dtype=np.double)
+  angles = np.zeros([3], dtype=np.double)
+  ret = ttv_detect_face(image, image.shape[1], image.shape[0], faceRect, livenessScore, angles)
+  if ret == -1:
+      result = "license error!"
+  elif ret == -2:
+      result = "init error!"
+  elif ret == 0:
+      result = "no face detected!"
+  elif ret > 1:
+      result = "multiple face detected!"
+  elif faceRect[0] < 0 or faceRect[1] < 0 or faceRect[2] >= image.shape[1] or faceRect[2] >= image.shape[0]:
+      result = "faace is in boundary!"
+  elif livenessScore[0] > 0.5:
+      result = "genuine"
   else:
-    ocrResDict = json.loads(ocrResult)  
-
-  response = jsonify({"status": status, "data": ocrResDict})
-
-  os.remove(file_path)
+      result = "spoof"
+  
+  status = "ok"
+  response = jsonify({"status": status, "data": {"result": result, "face_rect": {"x": int(faceRect[0]), "y": int(faceRect[1]), "w": int(faceRect[2] - faceRect[0] + 1), "h" : int(faceRect[3] - faceRect[1] + 1)}, "liveness_score": livenessScore[0],
+    "angles": {"yaw": angles[0], "roll": angles[1], "pitch": angles[2]}}})
 
   response.status_code = 200
   response.headers["Content-Type"] = "application/json; charset=utf-8"
   return response
 
-@app.route('/ocr/credit_base64', methods=['POST'])
-def ocr_credit_base64():
-  print('ocr_credit_base64');
+@app.route('/api/liveness_base64', methods=['POST'])
+def check_liveness_base64():
   content = request.get_json()
   imageBase64 = content['image']
   image = cv2.imdecode(np.frombuffer(base64.b64decode(imageBase64), dtype=np.uint8), cv2.IMREAD_COLOR)
 
-  file_name = uuid.uuid4().hex[:6]
-  save_path = '/tmp/' + file_name + '.png'
-  cv2.imwrite(save_path, image)
-
-  file_path = os.path.abspath(save_path)
-
-  ocrResult = TTVOcrCreditCard(file_path.encode('utf-8'))
-  status = "ok"
-  if not ocrResult:
-    ocrResDict = {}
-    status = "error"
+  faceRect = np.zeros([4], dtype=np.int32)
+  livenessScore = np.zeros([1], dtype=np.double)
+  angles = np.zeros([3], dtype=np.double)
+  ret = ttv_detect_face(image, image.shape[1], image.shape[0], faceRect, livenessScore, angles)
+  if ret == -1:
+      result = "license error!"
+  elif ret == -2:
+      result = "init error!"
+  elif ret == 0:
+      result = "no face detected!"
+  elif ret > 1:
+      result = "multiple face detected!"
+  elif faceRect[0] < 0 or faceRect[1] < 0 or faceRect[2] >= image.shape[1] or faceRect[2] >= image.shape[0]:
+      result = "faace is in boundary!"
+  elif livenessScore[0] > 0.5:
+      result = "genuine"
   else:
-    ocrResDict = json.loads(ocrResult)
-
-  response = jsonify({"status": status, "data": ocrResDict})
-
-  os.remove(file_path)
+      result = "spoof"
+  
+  status = "ok"
+  response = jsonify({"status": status, "data": {"result": result, "face_rect": {"x": int(faceRect[0]), "y": int(faceRect[1]), "w": int(faceRect[2] - faceRect[0] + 1), "h" : int(faceRect[3] - faceRect[1] + 1)}, "liveness_score": livenessScore[0],
+    "angles": {"yaw": angles[0], "roll": angles[1], "pitch": angles[2]}}})
 
   response.status_code = 200
   response.headers["Content-Type"] = "application/json; charset=utf-8"
   return response
-
-@app.route('/ocr/barcode', methods=['POST'])
-def ocr_barcode():
-  file = request.files['image']
-  print('ocr_barcode ', file)
-
-  image = cv2.imdecode(np.fromstring(file.read(), np.uint8), cv2.IMREAD_COLOR)
-  file_name = uuid.uuid4().hex[:6]
-  save_path = '/tmp/' + file_name + '.png'
-  cv2.imwrite(save_path, image)
-
-  file_path = os.path.abspath(save_path)
-
-  ocrResult = TTVOcrBarCode(file_path.encode('utf-8'))
-  status = "ok"
-  if not ocrResult:
-    ocrResDict = {}
-    status = "error"
-  else:
-    ocrResDict = json.loads(ocrResult)  
-
-  response = jsonify({"status": status, "data": ocrResDict})
-
-  os.remove(file_path)
-
-  response.status_code = 200
-  response.headers["Content-Type"] = "application/json; charset=utf-8"
-  return response
-
-@app.route('/ocr/barcode_base64', methods=['POST'])
-def ocr_barcode_base64():
-  content = request.get_json()
-  imageBase64 = content['image']
-  image = cv2.imdecode(np.frombuffer(base64.b64decode(imageBase64), dtype=np.uint8), cv2.IMREAD_COLOR)
-
-  file_name = uuid.uuid4().hex[:6]
-  save_path = '/tmp/' + file_name + '.png'
-  cv2.imwrite(save_path, image)
-
-  file_path = os.path.abspath(save_path)
-  print('file_path: ', file_path)
-
-  ocrResult = TTVOcrBarCode(file_path.encode('utf-8'))
-  status = "ok"
-  if not ocrResult:
-    ocrResDict = {}
-    status = "error"
-  else:
-    ocrResDict = json.loads(ocrResult)
-
-  response = jsonify({"status": status, "data": ocrResDict})
-
-  os.remove(file_path)
-
-  response.status_code = 200
-  response.headers["Content-Type"] = "application/json; charset=utf-8"
-
-  return response
-
 
 
 if __name__ == '__main__':
