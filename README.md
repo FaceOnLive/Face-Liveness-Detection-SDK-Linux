@@ -15,14 +15,14 @@ Make sure to check it out at https://getapi.faceonlive.com and take advantage of
 </p>
 
 </br>
-Integrated into [Huggingface Spaces 🤗](https://huggingface.co/spaces) using [Gradio](https://github.com/gradio-app/gradio). Try out the Web Demo: [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/FaceOnLive/Face-Liveness-Detection-SDK)
-</br>
 
 ### Documentation at https://docs.faceonlive.com
 </br>
 
 ## :tada:  Try It Yourself on our Portfolio Website
 ### https://portfolio.faceonlive.com/#server_sdks/server/liv
+
+Integrated into [Huggingface Spaces 🤗](https://huggingface.co/spaces) using [Gradio](https://github.com/gradio-app/gradio). Try out the Web Demo: [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/FaceOnLive/Face-Liveness-Detection-SDK)
 
 ## :muscle:  Partnership / Cooperation / Project Discussion
 &emsp;<a href="mailto:contact@faceonlive.com?subject=[GitHub]%20Face%20Liveness%20Detection%20SDK%20Linux"><img src="https://img.shields.io/badge/mail-%23DD0031.svg?&style=flat&logo=gmail&logoColor=white"  height="64"/></a>
