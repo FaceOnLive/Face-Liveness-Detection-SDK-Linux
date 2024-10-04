@@ -1,36 +1,31 @@
-✨ _**Update (Mar 1, 2024):**_
-Introduce **OpenKYC Community Project**, build your own eKYC solution and contribute at this [https://github.com/FaceOnLive/OpenKYC](https://github.com/FaceOnLive/OpenKYC).
-
-✨ _**Update (Oct 26, 2023):**_
-We are on Hugging Face, get your own SDK Servers by duplicating spaces at https://huggingface.co/FaceOnLive.
-
-✨ _**Update (Apr 10, 2023):**_
-Our API portal is now live, offering free APIs for various AI solutions, including face recognition, liveness detection, and ID document recognition.<br/>
-Make sure to check it out at https://getapi.faceonlive.com and take advantage of our free offerings.
+<div align="center">
+  <a href="https://join.slack.com/t/faceonlive/shared_invite/zt-2drx19c5t-vQsR4TUGPD8oL7i7BXdKZA">Slack</a>
+    ·
+   <a href="https://www.faceonlive.com/">Website</a>
+    ·
+   <a href="https://portfolio.faceonlive.com">Portfolio</a>  
+    ·
+    <a href="https://www.huggingface.co/FaceOnLive">Hugging Face</a>
+    ·
+    <a href="https://getapi.faceonlive.com">Free APIs</a>
+    ·
+    <a href="https://github.com/FaceOnLive/OpenKYC">OpenKYC</a>  
+    ·
+    <a href="https://github.com/FaceOnLive/Mask-Face-Attendance-App-Flutter">Face Attendance</a>  
+    ·
+    <a href="mailto:contact@faceonlive.com">Contact</a>
+</div>
 <h1 align="center">Face Liveness Detection SDK For Linux</h1>
 <p align="center">Fully Offline, On-Premise Face Liveness Detection SDK for Linux</p>
 
-<p align="center">
-<a target="_blank" href="mailto:contact@faceonlive.com"><img src="https://img.shields.io/badge/email-contact@faceonlive.com-blue.svg?logo=gmail " alt="www.faceonlive.com"></a>&emsp;
-<a target="_blank" href="https://t.me/faceonlive"><img src="https://img.shields.io/badge/telegram-@faceonlive-blue.svg?logo=telegram " alt="www.faceonlive.com"></a>&emsp;
-<a target="_blank" href="https://wa.me/+17074043606"><img src="https://img.shields.io/badge/whatsapp-faceonlive-blue.svg?logo=whatsapp " alt="www.faceonlive.com"></a>&emsp;
-<a target="_blank" href="https://huggingface.co/spaces/FaceOnLive/Face-Liveness-Detection-SDK"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue" alt="www.faceonlive.com"></a>
-</p>
-
+</br>
+Documentation at https://docs.faceonlive.com
 </br>
 
-### Documentation at https://docs.faceonlive.com
-</br>
-
-## :tada:  Try It Yourself on our Portfolio Website
-### https://portfolio.faceonlive.com/#server_sdks/server/liv
+## :tada:  Try It Yourself on our [Portfolio Website](https://portfolio.faceonlive.com/#server_sdks/server/liv)
 
 Integrated into [Huggingface Spaces 🤗](https://huggingface.co/spaces) using [Gradio](https://github.com/gradio-app/gradio). Try out the Web Demo: [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/FaceOnLive/Face-Liveness-Detection-SDK)
 
-## :muscle:  Partnership / Cooperation / Project Discussion
-&emsp;<a href="mailto:contact@faceonlive.com?subject=[GitHub]%20Face%20Liveness%20Detection%20SDK%20Linux"><img src="https://img.shields.io/badge/mail-%23DD0031.svg?&style=flat&logo=gmail&logoColor=white"  height="64"/></a>
-</br>
-</br>
 
 https://user-images.githubusercontent.com/91896009/187945910-4ca6d27c-d058-4749-a834-44914a5a957c.mp4
 
